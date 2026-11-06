@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelling Abroad: Discuss Both Views (Foundation Level)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #0ea5e9;
+            --accent-amber: #f59e0b;
+            --bg-dark: #0f172a;
+            --text-white: #f8fafc;
+            --card-bg: #1e293b;
+            --chip-bg: #374151;
+            --success-green: #10b981;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            padding: 1.2rem 3rem 5.5rem 3rem;
+            box-sizing: border-box;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide.active { display: flex; }
+
+        /* PRIMARY INSTRUCTIONAL/RESULT TEXT: Big, bold, clear for easy reading */
+        .instr-text {
+            font-size: 30px;
+            font-weight: 800;
+            line-height: 1.45;
+            margin-bottom: 0.8rem;
+            color: var(--text-white);
+        }
+
+        .accent-text { color: var(--accent-amber); }
+        .blue-text { color: var(--primary-blue); }
+        .green-text { color: var(--success-green); }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-blue);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            width: 100%;
+            max-width: 1250px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            margin: 0.4rem 0;
+        }
+
+        .scrambled-box {
+            background: #111827;
+            border: 3px dashed var(--accent-amber);
+            padding: 1rem 1.4rem;
+            border-radius: 1rem;
+            margin-bottom: 0.9rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .word-chip {
+            background: var(--chip-bg);
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            border: 1px solid #4b5563;
+            color: #f3f4f6;
+            cursor: default;
+            user-select: none;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+
+        .word-chip:hover {
+            transform: translateY(-2px);
+            background-color: #4b5563;
+        }
+
+        .prompt-row {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1.1rem;
+            margin-bottom: 0.75rem;
+            text-align: left;
+        }
+
+        .nav-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.8rem 1.6rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.25s ease-in-out;
+            border: none;
+            margin: 0 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:hover { background-color: #0284c7; transform: translateY(-2px); }
+        .nav-btn:disabled { background-color: #334155; opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        .action-btn {
+            background-color: var(--accent-amber);
+            color: #000;
+            padding: 0.75rem 1.6rem;
+            border-radius: 0.75rem;
+            font-weight: 900;
+            font-size: 1.15rem;
+            margin: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover { background-color: #d97706; transform: scale(1.03); }
+
+        .reveal-box {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(14, 165, 233, 0.12);
+            border-left: 10px solid var(--primary-blue);
+            padding: 1.2rem 1.6rem;
+            margin-top: 0.9rem;
+            display: none;
+            text-align: left;
+            border-radius: 0 0.8rem 0.8rem 0;
+        }
+
+        .reveal-box.visible { opacity: 1; transform: translateY(0); display: block; }
+
+        .author-tag {
+            position: fixed;
+            top: 18px;
+            right: 22px;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            font-weight: 700;
+            background: rgba(30, 41, 59, 0.92);
+            padding: 0.45rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+            z-index: 50;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-amber));
+            transition: width 0.35s ease;
+            z-index: 60;
+        }
+
+        .point-item {
+            opacity: 0;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: left;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+        .point-item.visible { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher and Module Watermark -->
+    <div class="author-tag">Muhammad Shahzad_utas _ ibra/GE3/2026</div>
+
+    <!-- Slide 1: Cover -->
+    <div class="slide active" id="slide1">
+        <div class="text-9xl mb-6">✈️</div>
+        <p class="instr-text accent-text" style="font-size: 46px;">Travelling Abroad: Discuss Both Views & Opinion</p>
+        <div class="card border-4 border-sky-500 max-w-4xl">
+            <p class="instr-text blue-text">Muhammad Shahzad_utas _ ibra/GE3/2026</p>
+            <p class="text-2xl mt-4 text-slate-300 font-semibold tracking-wide">Foundation English Writing: Discuss Both Views with Simple Sentences</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: The Question -->
+    <div class="slide" id="slide2">
+        <h2 class="instr-text">The <span class="accent-text">IELTS Essay Question</span></h2>
+        <div class="card bg-slate-900 p-10 text-left border-dashed border-white">
+            <p class="text-2xl mb-4 text-sky-400 font-bold uppercase tracking-wide">Writing Task 2: Discuss Both Views</p>
+            <p class="instr-text" style="font-size: 32px;">
+                "<span class="blue-text">Some people think that travelling to other countries is a positive trend</span>, <span class="accent-text">while others believe that it creates many problems for travelers</span>."
+            </p>
+            <div class="h-1 w-full bg-slate-700 my-5"></div>
+            <p class="instr-text accent-text font-black" style="font-size: 28px;">
+                Discuss both views and give your opinion.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 3: Interactive Brainstorming (12 Points) -->
+    <div class="slide" id="slide3">
+        <h2 class="instr-text">Step 1: <span class="accent-text">Brainstorming (12 Easy Ideas)</span></h2>
+        <div class="grid grid-cols-2 gap-5 w-full max-w-6xl">
+            <div class="card border-2">
+                <p class="text-2xl font-black blue-text mb-3 underline">ADVANTAGES (6 Good Points)</p>
+                <div class="flex flex-wrap gap-2 justify-center mb-4">
+                    <button class="action-btn" onclick="revealItem('p1')">1</button>
+                    <button class="action-btn" onclick="revealItem('p2')">2</button>
+                    <button class="action-btn" onclick="revealItem('p3')">3</button>
+                    <button class="action-btn" onclick="revealItem('p4')">4</button>
+                    <button class="action-btn" onclick="revealItem('p5')">5</button>
+                    <button class="action-btn" onclick="revealItem('p6')">6</button>
+                </div>
+                <div class="space-y-1">
+                    <div id="p1" class="point-item">• Learning New Cultures (Tasting food and seeing traditions)</div>
+                    <div id="p2" class="point-item">• Practicing English (Speaking with people from other countries)</div>
+                    <div id="p3" class="point-item">• Making New Friends (Meeting people around the world)</div>
+                    <div id="p4" class="point-item">• Building Independence (Learning to solve daily problems alone)</div>
+                    <div id="p5" class="point-item">• Rest and Relaxation (Taking a break from daily stress and study)</div>
+                    <div id="p6" class="point-item">• Seeing Famous Places (Visiting historic cities and landmarks)</div>
+                </div>
+            </div>
+            <div class="card border-2 border-amber-500">
+                <p class="text-2xl font-black accent-text mb-3 underline">DISADVANTAGES (6 Bad Points)</p>
+                <div class="flex flex-wrap gap-2 justify-center mb-4">
+                    <button class="action-btn" onclick="revealItem('c1')">1</button>
+                    <button class="action-btn" onclick="revealItem('c2')">2</button>
+                    <button class="action-btn" onclick="revealItem('c3')">3</button>
+                    <button class="action-btn" onclick="revealItem('c4')">4</button>
+                    <button class="action-btn" onclick="revealItem('c5')">5</button>
+                    <button class="action-btn" onclick="revealItem('c6')">6</button>
+                </div>
+                <div class="space-y-1">
+                    <div id="c1" class="point-item">• High Expenses (Plane tickets, hotels, and food cost a lot)</div>
+                    <div id="c2" class="point-item">• Culture Shock (Feeling confused by strange habits and food)</div>
+                    <div id="c3" class="point-item">• Language Problems (Difficulty asking for help or directions)</div>
+                    <div id="c4" class="point-item">• Homesickness (Missing family, friends, and home)</div>
+                    <div id="c5" class="point-item">• Travel Dangers (Risk of theft, losing a passport, or getting sick)</div>
+                    <div id="c6" class="point-item">• Long Journey Fatigue (Tiredness from jet lag and delays)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Slide 4: Intro Paraphrase Challenge (Out of order) -->
+    <div class="slide" id="slide4">
+        <h2 class="instr-text">Intro Step 1: <span class="blue-text">Jumbled Background Sentence</span></h2>
+        <div class="card">
+            <p class="text-2xl mb-4 italic text-slate-300">Put these chips in the right order to make an easy opening sentence:</p>
+            <div class="scrambled-box">
+                <span class="word-chip">while others argue that</span>
+                <span class="word-chip">Some people believe that</span>
+                <span class="word-chip">it causes many problems.</span>
+                <span class="word-chip">travelling to other countries is good,</span>
+            </div>
+            <button class="action-btn" onclick="revealBox('r-p1')">Reveal Sentence</button>
+            <div id="r-p1" class="reveal-box">
+                <p class="instr-text">"Some people believe that travelling to other countries is good, while others argue that it causes many problems."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Intro Thesis Statement Challenge (Out of order) -->
+    <div class="slide" id="slide5">
+        <h2 class="instr-text">Intro Step 2: <span class="blue-text">Jumbled Plan & Opinion Sentence</span></h2>
+        <div class="card">
+            <p class="text-2xl mb-4 italic text-slate-300">Put these chips in order to state your essay plan and opinion:</p>
+            <div class="scrambled-box">
+                <span class="word-chip">at the end.</span>
+                <span class="word-chip">both views,</span>
+                <span class="word-chip">This essay will discuss</span>
+                <span class="word-chip">my own opinion</span>
+                <span class="word-chip">and I will give</span>
+            </div>
+            <button class="action-btn" onclick="revealBox('r-p2')">Reveal Sentence</button>
+            <div id="r-p2" class="reveal-box">
+                <p class="instr-text">"This essay will discuss <span class="blue-text">both views, and I will give my own opinion</span> at the end."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Summary Introduction -->
+    <div class="slide" id="slide6">
+        <h2 class="instr-text">Summary: <span class="accent-text">The Complete Introduction</span></h2>
+        <div class="card bg-slate-800 border-l-[15px] border-blue-500 text-left px-12 py-10">
+            <p class="instr-text" style="font-size: 28px; line-height: 1.6;">
+                "Some people believe that travelling to other countries is good, while others argue that it causes many problems. <span class="accent-text">This essay will discuss both views, and I will give my own opinion at the end.</span>"
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 7: Body Paragraph 1 - ALL JUMBLED PROMPTS ON ONE SLIDE -->
+    <div class="slide" id="slide7">
+        <h2 class="instr-text">Body 1 Challenge: <span class="blue-text">View 1 (Why Some People Think Travelling Is Positive)</span></h2>
+        <p class="text-xl mb-3 text-slate-300 italic">Unscramble each line from left to right, then click Reveal to check your work!</p>
+        <div class="card overflow-y-auto max-h-[68vh] text-left p-6">
+            
+            <!-- Row 1: Topic Sentence -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-sky-400 text-lg">1. TOPIC SENTENCE (VIEW 1)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b1-all-ts')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">a very positive trend.</span>
+                    <span class="word-chip text-base py-1 px-3">visiting other countries is</span>
+                    <span class="word-chip text-base py-1 px-3">many people believe that</span>
+                    <span class="word-chip text-base py-1 px-3">On the one hand,</span>
+                </div>
+                <div id="b1-all-ts" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "On the one hand, many people believe that <span class="blue-text">visiting other countries is a very positive trend</span>."
+                </div>
+            </div>
+
+            <!-- Row 2: Point 1 (New Cultures & Languages) -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-sky-400 text-lg">2. POINT 1 (New Cultures & Speaking English)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b1-all-p1')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">because students can practice English</span>
+                    <span class="word-chip text-base py-1 px-3">Firstly,</span>
+                    <span class="word-chip text-base py-1 px-3">it helps people discover new cultures</span>
+                    <span class="word-chip text-base py-1 px-3">and try delicious local food.</span>
+                    <span class="word-chip text-base py-1 px-3">with native speakers</span>
+                </div>
+                <div id="b1-all-p1" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "Firstly, it helps people discover new cultures because students can practice English <span class="accent-text">with native speakers and try delicious local food</span>."
+                </div>
+            </div>
+
+            <!-- Row 3: Point 2 (Independence & Life Skills) -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-sky-400 text-lg">3. POINT 2 (Learning Independence)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b1-all-p2')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">Secondly,</span>
+                    <span class="word-chip text-base py-1 px-3">because they learn to manage money</span>
+                    <span class="word-chip text-base py-1 px-3">it teaches travelers to become independent</span>
+                    <span class="word-chip text-base py-1 px-3">without asking their parents.</span>
+                    <span class="word-chip text-base py-1 px-3">and solve daily problems</span>
+                </div>
+                <div id="b1-all-p2" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "Secondly, it teaches travelers to become independent <span class="blue-text">because they learn to manage money and solve daily problems</span> without asking their parents."
+                </div>
+            </div>
+
+            <!-- Row 4: Point 3 (Rest & Famous Places) -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-sky-400 text-lg">4. POINT 3 (Resting & Visiting Famous Places)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b1-all-p3')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">Finally,</span>
+                    <span class="word-chip text-base py-1 px-3">taking a trip helps people relax,</span>
+                    <span class="word-chip text-base py-1 px-3">giving them unforgettable memories.</span>
+                    <span class="word-chip text-base py-1 px-3">forget study stress,</span>
+                    <span class="word-chip text-base py-1 px-3">and visit famous world landmarks,</span>
+                </div>
+                <div id="b1-all-p3" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "Finally, taking a trip helps people relax, <span class="green-text">forget study stress, and visit famous world landmarks</span>, giving them unforgettable memories."
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Slide 8: Summary Full Body 1 -->
+    <div class="slide" id="slide8">
+        <h2 class="instr-text">Summary: <span class="accent-text">Full Body 1 (View 1)</span></h2>
+        <div class="card bg-slate-800 border-l-[15px] border-amber-500 text-left px-12 py-8 overflow-y-auto max-h-[70vh]">
+            <p class="instr-text" style="font-size: 24px; line-height: 1.6;">
+                "On the one hand, many people believe that visiting other countries is a very positive trend. Firstly, it helps people discover new cultures because students can practice English with native speakers and try delicious local food. Secondly, it teaches travelers to become independent because they learn to manage money and solve daily problems without asking their parents. Finally, taking a trip helps people relax, forget study stress, and visit famous world landmarks, giving them unforgettable memories."
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 9: Body Paragraph 2 - ALL JUMBLED PROMPTS ON ONE SLIDE -->
+    <div class="slide" id="slide9">
+        <h2 class="instr-text">Body 2 Challenge: <span class="accent-text">View 2 (Why Others Believe It Causes Problems)</span></h2>
+        <p class="text-xl mb-3 text-slate-300 italic">Unscramble each line from left to right, then click Reveal to check your answers!</p>
+        <div class="card overflow-y-auto max-h-[68vh] text-left p-6">
+            
+            <!-- Row 1: Topic Sentence -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-amber-400 text-lg">1. TOPIC SENTENCE (VIEW 2)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b2-all-ts')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">creates too many problems.</span>
+                    <span class="word-chip text-base py-1 px-3">others argue that</span>
+                    <span class="word-chip text-base py-1 px-3">travelling abroad</span>
+                    <span class="word-chip text-base py-1 px-3">On the other hand,</span>
+                </div>
+                <div id="b2-all-ts" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "On the other hand, others argue that <span class="accent-text">travelling abroad creates too many problems</span>."
+                </div>
+            </div>
+
+            <!-- Row 2: Point 1 (High Costs) -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-amber-400 text-lg">2. POINT 1 (Very High Expenses)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b2-all-p1')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">Firstly,</span>
+                    <span class="word-chip text-base py-1 px-3">it requires a lot of money</span>
+                    <span class="word-chip text-base py-1 px-3">which can cause big money trouble</span>
+                    <span class="word-chip text-base py-1 px-3">for plane tickets and hotels,</span>
+                    <span class="word-chip text-base py-1 px-3">for poor students.</span>
+                </div>
+                <div id="b2-all-p1" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "Firstly, it requires a lot of money for plane tickets and hotels, <span class="accent-text">which can cause big money trouble for poor students</span>."
+                </div>
+            </div>
+
+            <!-- Row 3: Point 2 (Language Barriers & Culture Shock) -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-amber-400 text-lg">3. POINT 2 (Language Barriers & Culture Shock)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b2-all-p2')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">Secondly,</span>
+                    <span class="word-chip text-base py-1 px-3">travelers may face language barriers</span>
+                    <span class="word-chip text-base py-1 px-3">and feel confused</span>
+                    <span class="word-chip text-base py-1 px-3">by strange local rules,</span>
+                    <span class="word-chip text-base py-1 px-3">leading to homesickness.</span>
+                </div>
+                <div id="b2-all-p2" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "Secondly, travelers may face language barriers and feel confused <span class="accent-text">by strange local rules, leading to homesickness</span>."
+                </div>
+            </div>
+
+            <!-- Row 4: Point 3 (Safety Risks & Lost Documents) -->
+            <div class="prompt-row">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-amber-400 text-lg">4. POINT 3 (Safety Risks & Losing Passports)</span>
+                    <button class="action-btn text-sm py-1 px-3" onclick="revealBox('b2-all-p3')">Reveal</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="word-chip text-base py-1 px-3">Finally,</span>
+                    <span class="word-chip text-base py-1 px-3">there are safety dangers</span>
+                    <span class="word-chip text-base py-1 px-3">such as losing a passport,</span>
+                    <span class="word-chip text-base py-1 px-3">getting sick,</span>
+                    <span class="word-chip text-base py-1 px-3">or meeting thieves in unknown streets.</span>
+                </div>
+                <div id="b2-all-p3" class="reveal-box my-1 py-2 text-xl font-bold text-slate-200">
+                    "Finally, there are safety dangers such as losing a passport, getting sick, <span class="accent-text">or meeting thieves in unknown streets</span>."
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Slide 10: Summary Full Body 2 -->
+    <div class="slide" id="slide10">
+        <h2 class="instr-text">Summary: <span class="accent-text">Full Body 2 (View 2)</span></h2>
+        <div class="card bg-slate-800 border-l-[15px] border-blue-500 text-left px-12 py-8 overflow-y-auto max-h-[70vh]">
+            <p class="instr-text" style="font-size: 24px; line-height: 1.6;">
+                "On the other hand, others argue that travelling abroad creates too many problems. Firstly, it requires a lot of money for plane tickets and hotels, which can cause big money trouble for poor students. Secondly, travelers may face language barriers and feel confused by strange local rules, leading to homesickness. Finally, there are safety dangers such as losing a passport, getting sick, or meeting thieves in unknown streets."
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 11: Conclusion Synthesis with Summary + Opinion -->
+    <div class="slide" id="slide11">
+        <h2 class="instr-text">Conclusion Build: <span class="blue-text">Summary (Both Views) + Personal Opinion</span></h2>
+        <div class="card">
+            <p class="text-2xl mb-4 italic text-slate-300">Unscramble the chips: First summarize both views, then give your personal opinion:</p>
+            <div class="scrambled-box">
+                <span class="word-chip">while travelling abroad brings problems</span>
+                <span class="word-chip">In conclusion,</span>
+                <span class="word-chip">like high expenses and language trouble,</span>
+                <span class="word-chip">it also offers great benefits</span>
+                <span class="word-chip">like learning cultures and gaining independence.</span>
+                <span class="word-chip">In my opinion,</span>
+                <span class="word-chip">the benefits are much greater</span>
+                <span class="word-chip">because visiting new places</span>
+                <span class="word-chip">helps young people grow.</span>
+            </div>
+            <button class="action-btn" onclick="revealBox('r-conc')">Reveal Final Conclusion</button>
+            <div id="r-conc" class="reveal-box">
+                <p class="instr-text">
+                    "In conclusion, while travelling abroad brings problems like high expenses and language trouble, it also offers great benefits like learning cultures and gaining independence. <span class="accent-text">In my opinion, the benefits are much greater because visiting new places helps young people grow.</span>"
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Conclusion Stance Options for Students -->
+    <div class="slide" id="slide12">
+        <h2 class="instr-text">Conclusion: <span class="accent-text">Summary + 3 Personal Opinion Choices</span></h2>
+        <div class="grid grid-cols-1 gap-4 w-full max-w-6xl overflow-y-auto max-h-[68vh]">
+            <div class="card border-2 py-4 px-6 text-left">
+                <p class="text-xl font-black blue-text mb-2 underline">Option 1: Summary + Support First View (Positive Trend)</p>
+                <p class="text-lg leading-relaxed text-slate-200">
+                    "In conclusion, travelling abroad has both advantages like personal growth and disadvantages like high costs. <span class="blue-text font-bold">In my opinion, visiting foreign countries is a positive trend</span> because experiencing new cultures and learning daily independence are valuable life lessons for young people."
+                </p>
+            </div>
+            <div class="card border-2 border-amber-500 py-4 px-6 text-left">
+                <p class="text-xl font-black accent-text mb-2 underline">Option 2: Summary + Support Second View (Too Many Problems)</p>
+                <p class="text-lg leading-relaxed text-slate-200">
+                    "In conclusion, although visiting new countries can be exciting, it also brings real risks. <span class="accent-text font-bold">In my opinion, travelling abroad creates too many problems</span> because high costs and safety dangers make it unwise for young students."
+                </p>
+            </div>
+            <div class="card border-2 border-green-500 py-4 px-6 text-left">
+                <p class="text-xl font-black green-text mb-2 underline">Option 3: Summary + Balanced Opinion (Smart Planning)</p>
+                <p class="text-lg leading-relaxed text-slate-200">
+                    "In conclusion, there are valid arguments on both sides concerning the benefits and difficulties of travelling. <span class="green-text font-bold">In my opinion, people should travel abroad only if they plan their budget carefully</span> and stay safe during their trip."
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 13: Complete Model Response -->
+    <div class="slide" id="slide13">
+        <h2 class="instr-text">Review: <span class="accent-text">Complete Model Essay (Discuss Both Views)</span></h2>
+        <div class="card text-left bg-slate-900 overflow-y-auto max-h-[66vh] p-8">
+            <p class="text-xl leading-relaxed text-slate-200">
+                Some people believe that travelling to other countries is good, while others argue that it causes many problems. <span class="blue-text font-bold">This essay will discuss both views, and I will give my own opinion at the end.</span> <br><br>
+                On the one hand, many people believe that visiting other countries is a very positive trend. Firstly, it helps people discover new cultures because students can practice English with native speakers and try delicious local food. Secondly, it teaches travelers to become independent because they learn to manage money and solve daily problems without asking their parents. Finally, taking a trip helps people relax, forget study stress, and visit famous world landmarks, giving them unforgettable memories. <br><br>
+                On the other hand, others argue that travelling abroad creates too many problems. Firstly, it requires a lot of money for plane tickets and hotels, which can cause big money trouble for poor students. Secondly, travelers may face language barriers and feel confused by strange local rules, leading to homesickness. Finally, there are safety dangers such as losing a passport, getting sick, or meeting thieves in unknown streets. <br><br>
+                <span class="text-sky-300 font-bold">In conclusion, while travelling abroad brings problems like high expenses and language trouble, it also offers great benefits like learning cultures and gaining independence.</span> <span class="accent-text font-bold">In my opinion, the benefits are much greater because visiting new places helps young people grow.</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation Overlay -->
+    <div class="fixed bottom-10 w-full flex justify-center items-center z-50">
+        <button id="prevBtn" class="nav-btn" onclick="changeSlide(-1)">← Previous</button>
+        <div class="bg-slate-900/90 px-8 py-3 rounded-full border border-slate-700 mx-4 shadow-lg">
+            <span id="slideNum" class="font-black text-2xl tracking-tighter">1 / 13</span>
+        </div>
+        <button id="nextBtn" class="nav-btn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <div class="progress-bar" id="progress"></div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 13;
+
+        function updateUI() {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            const activeSlide = document.getElementById(`slide${currentSlide}`);
+            if (activeSlide) activeSlide.classList.add('active');
+            
+            document.getElementById('slideNum').innerText = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('progress').style.width = `${(currentSlide / totalSlides) * 100}%`;
+            
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+            updateUI();
+        }
+
+        function revealBox(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.add('visible');
+                element.animate([
+                    { transform: 'translateY(12px)', opacity: 0 },
+                    { transform: 'translateY(0)', opacity: 1 }
+                ], { duration: 350 });
+            }
+        }
+
+        function revealItem(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('visible');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
